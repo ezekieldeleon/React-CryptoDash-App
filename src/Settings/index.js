@@ -8,7 +8,7 @@ export default function() {
 	return (
 		<Page name="settings">
 			<WelcomeMessage />
-			<CoinGrid toSection />
+			<CoinGrid topSection />
 			<ConfirmButton />
 			<CoinGrid />
 		</Page>

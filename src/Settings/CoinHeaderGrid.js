@@ -10,7 +10,7 @@ export const CoinHeaderGridStyled = styled.div`
 export const CoinSymbol = styled.div`justify-self: right;`;
 
 const DeleteIcon = styled.div`
-	justify-seld: right;
+	justify-self: right;
 	display: none;
 	${DeletableTile}:hover & {
 		display: block;
