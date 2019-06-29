@@ -12,13 +12,14 @@ export class AppProvider extends Component {
     super(props);
     this.state = {
       page: "dashboard",
-      favorites: ["BTC", "ETH", "XMR", "DOGE"],
+      favorites: ["BTC", "ETH", "XzMR", "DOGE"],
       ...this.savedSettings(),
       setPage: this.setPage,
       addCoin: this.addCoin,
       removeCoin: this.removeCoin,
       isInFavorites: this.isInFavorites,
       confirmedFavorites: this.confirmedFavorites,
+      setCurrentFavorite: this.setCurrentFavorite,
       setFilteredCoins: this.setFilteredCoins
     };
   }
@@ -44,23 +45,23 @@ export class AppProvider extends Component {
   isInFavorites = key => _.includes(this.state.favorites, key);
 
   fetchPrices = async () => {
-    if(this.state.firstVisit) return;
+    if (this.state.firstVisit) return;
     let prices = await this.prices();
-    this.setState({prices});
-  }
+    this.setState({ prices });
+  };
 
   prices = async () => {
     let returnData = [];
-    for(let i = 0; i < this.state.favorites.length; i++) {
+    for (let i = 0; i < this.state.favorites.length; i++) {
       try {
-        let priceData = await cc.priceFull(this.state.favorites[i], 'USD');
+        let priceData = await cc.priceFull(this.state.favorites[i], "USD");
         returnData.push(priceData);
       } catch (e) {
-        console.warn('Fetch price error: ', e);
+        console.warn("Fetch price error: ", e);
       }
     }
     return returnData;
-  }
+  };
 
   fetchCoins = async () => {
     let coinList = (await cc.coinList()).Data;
@@ -68,16 +69,35 @@ export class AppProvider extends Component {
   };
 
   confirmedFavorites = () => {
+    let currentFavorite = this.state.favorites[0];
+    this.setState(
+      {
+        firstVisit: false,
+        page: "dashboard",
+        currentFavorite
+      },
+      () => {
+        this.fetchPrices();
+      }
+    );
+    localStorage.setItem(
+      "cryptoDash",
+      JSON.stringify({
+        favorites: this.state.favorites,
+        currentFavorite
+      })
+    );
+  };
+
+  setCurrentFavorite = sym => {
     this.setState({
-      firstVisit: false,
-      page: "dashboard"
-    }, () => {
-      this.fetchPrices();
+      currentFavorite: sym
     });
     localStorage.setItem(
       "cryptoDash",
       JSON.stringify({
-        favorites: this.state.favorites
+        ...JSON.parse(localStorage.getItem("cryptoDash")),
+        currentFavorite: sym
       })
     );
   };
@@ -87,8 +107,8 @@ export class AppProvider extends Component {
     if (!cryptoDashData) {
       return { page: "settings", firstVisit: true };
     }
-    let { favorites } = cryptoDashData;
-    return { favorites };
+    let { favorites, currentFavorite } = cryptoDashData;
+    return { favorites, currentFavorite };
   }
 
   setPage = page => this.setState({ page });
