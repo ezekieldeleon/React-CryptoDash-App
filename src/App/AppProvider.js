@@ -14,7 +14,7 @@ export class AppProvider extends Component {
     super(props);
     this.state = {
       page: "dashboard",
-      favorites: ["BTC", "ETH", "XzMR", "DOGE"],
+      favorites: ["BTC", "ETH", "XMR", "DOGE"],
       ...this.savedSettings(),
       timeInterval: "months",
       setPage: this.setPage,
@@ -37,7 +37,7 @@ export class AppProvider extends Component {
   changeChartSelect = value => {
     console.log(value);
     this.setState({ timeInterval: value, historical: null }, () => {
-      this.fetchHistorical;
+      this.fetchHistorical();
     });
   };
 

@@ -24,7 +24,7 @@ export default function() {
           {historical ? (
             <ReactHighCharts config={highChartConfig(historical)} />
           ) : (
-            <div> Loading Historical Chart </div>
+            <div> Loading Historical Data </div>
           )}
         </Tile>
       )}
