@@ -16,13 +16,15 @@ export class AppProvider extends Component {
       page: "dashboard",
       favorites: ["BTC", "ETH", "XzMR", "DOGE"],
       ...this.savedSettings(),
+      timeInterval: "months",
       setPage: this.setPage,
       addCoin: this.addCoin,
       removeCoin: this.removeCoin,
       isInFavorites: this.isInFavorites,
       confirmedFavorites: this.confirmedFavorites,
       setCurrentFavorite: this.setCurrentFavorite,
-      setFilteredCoins: this.setFilteredCoins
+      setFilteredCoins: this.setFilteredCoins,
+      changeChartSelect: this.changeChartSelect
     };
   }
 
@@ -30,6 +32,13 @@ export class AppProvider extends Component {
     this.fetchCoins();
     this.fetchPrices();
     this.fetchHistorical();
+  };
+
+  changeChartSelect = value => {
+    console.log(value);
+    this.setState({ timeInterval: value, historical: null }, () => {
+      this.fetchHistorical;
+    });
   };
 
   fetchHistorical = async () => {
@@ -42,7 +51,7 @@ export class AppProvider extends Component {
         name: this.state.currentFavorite,
         data: results.map((ticker, index) => [
           moment()
-            .subtract({ months: TIME_UNITS - index })
+            .subtract({ [this.state.timeInterval]: TIME_UNITS - index })
             .valueOf(),
           ticker.USD
         ])
@@ -59,7 +68,7 @@ export class AppProvider extends Component {
           this.state.currentFavorite,
           ["USD"],
           moment()
-            .subtract({ months: units })
+            .subtract({ [this.state.timeInterval]: units })
             .toDate()
         )
       );
